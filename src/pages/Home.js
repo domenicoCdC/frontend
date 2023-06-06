@@ -1,6 +1,6 @@
 import React from 'react'
-import Sidebar from "../components/Sidebar";
-import Chat from "../components/Chat";
+import Sidebar from "../components/home_components/Sidebar";
+import Chat from "../components/home_components/Chat";
 const Home =()=>{
     return (
         <div className='home'>
