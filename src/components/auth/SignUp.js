@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {createUserWithEmailAndPassword} from "firebase/auth"
 import auth from "../../firebase";
 import {Link, useNavigate} from "react-router-dom";
+import axios from "axios"
 
 export default function SignIn() {
     const [firstName, setFirstName] = useState('')
@@ -11,6 +12,7 @@ export default function SignIn() {
     const [password,setPassword] = useState('')
     const navigate=useNavigate()
 
+    const baseUrl = "http://localhost:3001/api/users/new";
     const signUp = (e) => {
         e.preventDefault();
         createUserWithEmailAndPassword(auth, email, password)
@@ -21,6 +23,16 @@ export default function SignIn() {
             .catch(err => {
             console.log(err)
         })
+        axios.post(baseUrl, {
+            firstName: firstName,
+            lastName: lastName,
+            username: username,
+            email:email
+        })
+            .then((res) => {
+                console.log(res.data)
+            })
+
     }
 
     return (
