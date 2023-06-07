@@ -3,12 +3,17 @@ import {signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider} from "f
 import auth from "../../firebase";
 import { GoogleButton } from 'react-google-button';
 import {Link, useNavigate} from "react-router-dom";
+import axios from "axios";
 
 export default function SignIn() {
 
     const [email, setEmail] = useState('')
     const [password,setPassword] = useState('')
     const navigate=useNavigate()
+
+
+    const baseUrl = 'http://localhost:3001/api/users/new';
+
     const signIn = (e) => {
         e.preventDefault();
         signInWithEmailAndPassword(auth, email, password)
@@ -20,15 +25,35 @@ export default function SignIn() {
         })
     }
 
-    const handleSignInWithGoogle = () => {
+    const handleSignInWithGoogle = async (e) => {
+        e.preventDefault();
         const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider)
+        await signInWithPopup(auth, provider)
             .then((userCredential) => {
-                console.log(userCredential)
+                const credential = userCredential.user;
+                console.log(credential)
+
+                axios.post(baseUrl,{
+                    fistName: credential.displayName,
+                    lastName: credential.displayName,
+                    username: credential.displayName,
+                    email: credential.email
+                }).then(res => {
+                    console.log(res.data)
+                })
+
+
+
                 navigate("/")
             }).catch(err => {
                 console.log(err)
         })
+
+
+
+
+
+
     }
 
     return (
