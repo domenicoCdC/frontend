@@ -13,25 +13,28 @@ export default function SignIn() {
     const navigate=useNavigate()
 
     const baseUrl = "http://localhost:3001/api/users/new";
-    const signUp = (e) => {
+    const signUp = async (e) => {
         e.preventDefault();
-        createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                console.log(userCredential)
-                navigate("/");
-            })
-            .catch(err => {
+        try {
+            const response = await createUserWithEmailAndPassword(auth, email, password)
+            navigate("/")
+            try{
+                const responsePostRequest = await axios.post(baseUrl, {
+                    firstName: firstName,
+                    lastName: lastName,
+                    username: username,
+                    email:email,
+                    uid: response.user.uid
+                })
+                console.log(responsePostRequest)
+            } catch (err) {
+                console.log(err)
+            }
+
+        } catch(err) {
             console.log(err)
-        })
-        axios.post(baseUrl, {
-            firstName: firstName,
-            lastName: lastName,
-            username: username,
-            email:email
-        })
-            .then((res) => {
-                console.log(res.data)
-            })
+        }
+
 
     }
 

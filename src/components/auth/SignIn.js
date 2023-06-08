@@ -14,45 +14,39 @@ export default function SignIn() {
 
     const baseUrl = 'http://localhost:3001/api/users/new';
 
-    const signIn = (e) => {
+    const signIn = async (e) => {
         e.preventDefault();
-        signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                console.log(userCredential)
-                navigate("/");
-            }).catch(err => {
+        try{
+            const response = await signInWithEmailAndPassword(auth, email, password)
+            console.log(response)
+            navigate("/")
+        }catch (err) {
             console.log(err)
-        })
+        }
     }
 
     const handleSignInWithGoogle = async (e) => {
         e.preventDefault();
         const provider = new GoogleAuthProvider();
-        await signInWithPopup(auth, provider)
-            .then((userCredential) => {
-                const credential = userCredential.user;
-                console.log(credential)
-
-                axios.post(baseUrl,{
-                    fistName: credential.displayName,
-                    lastName: credential.displayName,
-                    username: credential.displayName,
-                    email: credential.email
-                }).then(res => {
-                    console.log(res.data)
+        try{
+            const userCredential = (await signInWithPopup(auth, provider)).user
+            console.log(userCredential)
+            try {
+                const responsePostRequest = await  axios.post(baseUrl,{
+                    fistName: userCredential.displayName,
+                    lastName: userCredential.displayName,
+                    username: userCredential.displayName,
+                    email: userCredential.email,
+                    uid: userCredential.uid,
                 })
-
-
-
                 navigate("/")
-            }).catch(err => {
-                console.log(err)
-        })
-
-
-
-
-
+                console.log(responsePostRequest)
+            } catch (errore) {
+                console.log(errore)
+            }
+        } catch (err) {
+            console.log(err)
+        }
 
     }
 
