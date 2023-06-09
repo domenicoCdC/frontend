@@ -12,6 +12,7 @@ const Chat =()=>{
         <div className='chat'>
             <div className="chatInfo">
                 <span>{data.user?.username}</span>
+                <button>Add Friend</button>
             </div>
             <Messages/>
             <Input/>

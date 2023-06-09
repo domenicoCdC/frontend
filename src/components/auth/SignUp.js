@@ -51,7 +51,7 @@ export default function SignIn() {
                 <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)}/>
                 <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)}/>
                 <button type="submit">Register</button>
-                <p>Già iscritto? <Link to="/login">Login</Link></p>
+                <p>Do you already have an account? <Link to="/login">Login</Link></p>
             </form>
             </div>
         </div>
