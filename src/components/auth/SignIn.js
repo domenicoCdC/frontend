@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider} from "firebase/auth"
+import {signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider,updateProfile} from "firebase/auth"
 import auth from "../../firebase";
 import { GoogleButton } from 'react-google-button';
 import {Link, useNavigate} from "react-router-dom";
@@ -17,8 +17,8 @@ export default function SignIn() {
     const signIn = async (e) => {
         e.preventDefault();
         try{
-            const response = await signInWithEmailAndPassword(auth, email, password)
-            console.log(response)
+            const {user} = await signInWithEmailAndPassword(auth, email, password)
+            console.log(user)
             navigate("/")
         }catch (err) {
             console.log(err)
@@ -29,18 +29,19 @@ export default function SignIn() {
         e.preventDefault();
         const provider = new GoogleAuthProvider();
         try{
-            const userCredential = (await signInWithPopup(auth, provider)).user
-            console.log(userCredential)
+            const {user} = await signInWithPopup(auth, provider);
+
+            console.log(user)
             try {
                 const responsePostRequest = await  axios.post(baseUrl,{
-                    fistName: userCredential.displayName,
-                    lastName: userCredential.displayName,
-                    username: userCredential.displayName,
-                    email: userCredential.email,
-                    uid: userCredential.uid,
+                    fistName: user.displayName.slice(0, user.displayName.indexOf(" ")),
+                    lastName: user.displayName.slice(user.displayName.indexOf(" ") + 1),
+                    //username: user.displayName.slice(0, user.displayName.indexOf("@")),
+                    email: user.email,
+                    uid: user.uid,
                 })
                 navigate("/")
-                console.log(responsePostRequest)
+                console.log(responsePostRequest.data)
             } catch (errore) {
                 console.log(errore)
             }

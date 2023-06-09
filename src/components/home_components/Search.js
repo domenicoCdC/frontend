@@ -6,7 +6,8 @@ import { AuthContext} from "../../context/AuthContext";
 const Search =()=>{
 
     const {currentUser} = useContext(AuthContext)
-    const baseUrl = "http://localhost:3001/api/users/"
+    const baseUrlUsers = "http://localhost:3001/api/users/"
+    const baseUrlPostChats = "http://localhost:3000/api/chats/update"
 
     const [username, setUsername] = useState("")
     const [user, setUser] = useState(null);
@@ -15,13 +16,15 @@ const Search =()=>{
 
     const handleSearch = async () =>  {
         try {
-            const response = await axios.get(baseUrl+username);
-
+            const firstName = username.slice(0, username.indexOf("-"));
+            const lastName = username.slice(username.indexOf("-")+1)
+            const response = await axios.get(baseUrlUsers+firstName+"-"+lastName);
             setUser(response.data)
             console.log(user)
             console.log(currentUser)
         } catch (error)  {
             setErr(true)
+            console.log(error)
         }
     }
 
@@ -29,23 +32,47 @@ const Search =()=>{
         e.code === "Enter" && handleSearch();
     }
 
+
+    const handleSelect = async () => {
+
+        const response = await axios.post(baseUrlPostChats, {
+            userFindId:user.uid,
+            firstNameUserFind: user.firstName,
+            lastNameUserFind: user.lastName,
+            currentUserId: currentUser.uid,
+            firstNameCurrentUser:currentUser.displayName.slice(0, currentUser.displayName.indexOf(" ")),
+            lastNameCurrentUser:currentUser.displayName.slice(currentUser.displayName.indexOf(" ") + 1)
+        })
+        console.log(response)
+
+        setUser(null);
+    }
+
     return (
-        <div className='Search'>
+        <div className="search">
             <div className="searchForm">
                 <input
                     type="text"
-                    placeholder='find a user'
-                    onChange={e => setUsername(e.target.value)}
+                    placeholder="Find a user"
                     onKeyDown={handleKey}
+                    onChange={(e) => setUsername(e.target.value)}
+                    value={username}
                 />
             </div>
-            {user && <div className="userChat">
+            {err && <span>User not found!</span>}
+            {user && (
+                <div className="userChat" onClick={handleSelect}>
 
-                <div className="userChatInfo">
-                    <span>{user.firstName}</span>
+                    <div className="userChatInfo">
+                        <span>{user.displayName}</span>
+                    </div>
                 </div>
-            </div>}
+            )}
         </div>
-    )
+    );
 }
 export default Search
+
+/*
+<img src={user.photoURL} alt="" />
+ */
