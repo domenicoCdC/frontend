@@ -13,11 +13,18 @@ const Chats =()=>{
     const { dispatch } = useContext(ChatContext)
 
     useEffect( () => {
-        const getChats = async () => {
-            const fetchChats = await axios.get(baseGetChatsRealTimeUrl+currentUser.uid);
-            setChats(fetchChats.data)
-        };
-        currentUser.uid && getChats()
+
+            const getChats = async () => {
+                try {
+                    const fetchChats = await axios.get(baseGetChatsRealTimeUrl + currentUser.uid);
+                    setChats(fetchChats.data)
+                } catch (err) {
+                    console.log(err)
+                }
+            };
+            currentUser.uid && getChats()
+
+
     },[currentUser.uid])
 
     const handleSelect = (u) => {

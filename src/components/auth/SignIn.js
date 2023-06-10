@@ -6,15 +6,16 @@ import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
 
 export default function SignIn() {
-
+    const [error,setError] = useState(false)
     const [email, setEmail] = useState('')
     const [password,setPassword] = useState('')
     const navigate=useNavigate()
 
 
-    const baseUrl = 'http://localhost:3001/api/users/new';
+    const baseUsersApisUrl = 'http://localhost:3001/api/users/';
+    const baseChatsApisUrl="http://localhost:3001/api/chats/"
 
-    const signIn = async (e) => {
+    const handleSignIn = async (e) => {
         e.preventDefault();
         try{
             const {user} = await signInWithEmailAndPassword(auth, email, password)
@@ -22,6 +23,7 @@ export default function SignIn() {
             navigate("/")
         }catch (err) {
             console.log(err)
+            setError(true)
         }
     }
 
@@ -33,13 +35,15 @@ export default function SignIn() {
 
             console.log(user)
             try {
-                const responsePostRequest = await  axios.post(baseUrl,{
+                const responsePostRequest = await  axios.post(baseUsersApisUrl+"new",{
                     fistName: user.displayName.slice(0, user.displayName.indexOf(" ")),
                     lastName: user.displayName.slice(user.displayName.indexOf(" ") + 1),
-                    //username: user.displayName.slice(0, user.displayName.indexOf("@")),
                     email: user.email,
                     uid: user.uid,
                 })
+                const responseAddNewChatsPostRequest = await axios.post(baseChatsApisUrl+"newempty",{})
+                console.log(responseAddNewChatsPostRequest.data)
+
                 navigate("/")
                 console.log(responsePostRequest.data)
             } catch (errore) {
@@ -47,6 +51,7 @@ export default function SignIn() {
             }
         } catch (err) {
             console.log(err)
+            setError(true)
         }
 
     }
@@ -55,11 +60,12 @@ export default function SignIn() {
         <div className="formContainer">
             <div className='formWrapper'>
                 <span className='title'>Login</span>
-                <form onSubmit={signIn}>
+                <form onSubmit={handleSignIn}>
                     <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)}/>
                     <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)}/>
                     <button type="submit">Login</button>
                     <GoogleButton label='Continua con Google' onClick={handleSignInWithGoogle} />
+                    {error && <span>Qualcosa è andato storto</span>}
                     <p>Don't you have an account? <Link to="/register">Register</Link></p>
                 </form>
             </div>

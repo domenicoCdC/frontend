@@ -11,7 +11,8 @@ const Chat =()=>{
     return (
         <div className='chat'>
             <div className="chatInfo">
-                <span>{data.user?.username}</span>
+                <span></span>
+                <span>{data.user?.firstName}</span>
             </div>
             <Messages/>
             <Input/>
