@@ -10,12 +10,15 @@ const Messages =()=>{
     const baseChatsApisUrl = "http://localhost:3000/api/chats/";
 
     useEffect( () => {
-            const getChats = async () => {
 
-                const response = await axios.get(`${baseChatsApisUrl}"refreshchat/${data.chatId}`)
+        axios.get(baseChatsApisUrl+"refreshchat/"+data.chatId)
+            .then((response) =>{
                 setMessages(response.data.messages)
-            };
-            data.chatId && getChats();
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+
 
     },[data.chatId])
 

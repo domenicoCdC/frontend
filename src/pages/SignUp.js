@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {createUserWithEmailAndPassword, updateProfile} from "firebase/auth"
-import auth from "../../firebase";
+import auth from "../firebase";
 import {Link, useNavigate} from "react-router-dom";
 import axios from "axios"
 
@@ -15,46 +15,48 @@ export default function SignIn() {
 
     const baseUsersApisUrl = "http://localhost:3001/api/users/";
     const baseChatsApisUrl = "http://localhost:3001/api/chats/"
-    const handleSignUp = async (e) => {
+    const handleSignUp = (e) => {
         setloading(true)
         e.preventDefault();
-        try {
-            //Creazione dell'utente nel database delle autenticazioni con registrazione sicura
-            const {user} = await createUserWithEmailAndPassword(auth, email, password)
-            //aggiorno il profilo creato inserendo il displayName
-            await updateProfile(user, {
-                displayName:firstName + " " + lastName
-            })
 
-            console.log(user);
-
-            try{
-                //inserisco l'utente nel databse
-
-                const responseAddNewUserPostRequest = await axios.post(baseUsersApisUrl+"new", {
-                    firstName: firstName,
-                    lastName: lastName,
-                    email:email,
-                    uid: user.uid
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((user) => {
+                updateProfile(user.user, {
+                    displayName: firstName + " " + lastName
+                }).then(r => {
+                    console.log(r)
+                    axios.post(baseUsersApisUrl+"new", {
+                        firstName: firstName,
+                        lastName: lastName,
+                        email:email,
+                        uid: user.user.uid
+                    })
+                        .then((res) => {
+                            console.log(res.data)
+                            axios.post(baseChatsApisUrl+"newempty",{ userId: user.user.uid })
+                                .then((res) => {
+                                    console.log(res)
+                                    navigate("/")
+                                })
+                                .catch((err) => {
+                                    setError(true)
+                                    console.log(err)
+                                })
+                        })
+                        .catch((err) => {
+                            setError(true)
+                            console.log(err)
+                        })
                 })
-                //vedo a console la risposta della richiesta POST
-                console.log(responseAddNewUserPostRequest.data)
-
-                //const responseAddNewChatsPostRequest = await axios.post(baseChatsApisUrl+"newEmpty",{})
-                //console.log(responseAddNewChatsPostRequest.data)
-                navigate("/")
-
-            } catch (err) {
-                console.log(err)
+                    .catch((err) => {
+                        setError(true)
+                        console.log(err)
+                    })
+            })
+            .catch((err) => {
                 setError(true)
-            }
-
-        } catch(err) {
-            console.log(err)
-            setError(true)
-        }
-
-
+                console.log(err)
+            });
     }
 
     return (

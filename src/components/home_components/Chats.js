@@ -13,16 +13,13 @@ const Chats =()=>{
     const { dispatch } = useContext(ChatContext)
 
     useEffect( () => {
-
-            const getChats = async () => {
-                try {
-                    const fetchChats = await axios.get(baseGetChatsRealTimeUrl + currentUser.uid);
-                    setChats(fetchChats.data)
-                } catch (err) {
-                    console.log(err)
-                }
-            };
-            currentUser.uid && getChats()
+        axios.get(baseGetChatsRealTimeUrl+currentUser.uid)
+            .then(response => {
+                setChats(response.data)
+            })
+            .catch((err) => {
+                console.log(err)
+            });
 
 
     },[currentUser.uid])
@@ -32,9 +29,10 @@ const Chats =()=>{
     };
 
 
+    //chat ordinate  Object.entries(chats)?.sort((a,b)=>b[1].date - a[1].date).map((chat) => (
     return (
         <div className='chats'>
-            {Object.entries(chats)?.sort((a,b)=>b[1].date - a[1].date).map((chat) => (
+            {Object.entries(chats)?.map((chat) => (
                 <div
                     className="userChat"
                     key={chat[0]}

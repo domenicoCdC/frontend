@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react'
 import {ChatContext} from "../../context/ChatContext";
 import {AuthContext} from "../../context/AuthContext";
-import axios from "axios";
+import axios, {put} from "axios";
 
 const Input =()=>{
 
@@ -11,20 +11,21 @@ const Input =()=>{
     const {currentUser} = useContext(AuthContext)
     const {data}=useContext(ChatContext)
 
-    const handleSend = async () => {
-        try{
-            const res = await axios.patch(baseChatsApisUrl+"updateMessage",{
-                chatId: data.chatId,
-                text: text,
-                senderId: currentUser.uid,
-                currentUserId: data.user.uid
-            })
-            console.log(res)
-        } catch (err) {
-            console.log(err)
-        }
-        setText("")
+    const handleSend = () => {
 
+        axios.put(baseChatsApisUrl+"updatemessage",{
+            chatId: data.chatId,
+            text: text,
+            senderId: currentUser.uid,
+            currentUserId: data.user.uid
+        })
+            .then((res) => {
+              console.log(res)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+        setText("")
 
     }
 

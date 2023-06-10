@@ -14,21 +14,23 @@ const Search =()=>{
     const [err, setErr] = useState(false)
 
 
-    const handleSearch = async () =>  {
-
-        try {
-            /*dall'username cercato dall'utente splitto in due variabili il suo nome e cognome
+    const handleSearch =  () =>  {
+        /*dall'username cercato dall'utente splitto in due variabili il suo nome e cognome
             e le utilizzo per chiamare l'api http://localhost:3001/api/users/?fullName
             ad esempio http....../users/Mario-Rossi mi restituirà l'user associato a mario rossi
-             */
-            const firstName = username.slice(0, username.indexOf(" "));
-            const lastName = username.slice(username.indexOf(" ")+1)
-            const response = await axios.get(baseUsersApisUrl+firstName+"-"+lastName);
-            setUser(response.data)
-        } catch (error)  {
-            setErr(true)
-            console.log(error)
-        }
+         */
+        const firstName = username.slice(0, username.indexOf(" "));
+        const lastName = username.slice(username.indexOf(" ")+1)
+        axios.get(baseUsersApisUrl+firstName+"-"+lastName)
+            .then((res) => {
+                console.log(res.data)
+                setUser(res.data)
+            })
+            .catch((err) => {
+                console.log(err)
+                setErr(true)
+            })
+        setErr(false)
     }
 
     const handleKey = e => {
@@ -36,23 +38,25 @@ const Search =()=>{
     }
 
 
-    const handleSelect = async () => {
-        try{
-            const response = await axios.post(baseUrlPostChats+"/update", {
-                userToChatId:user.uid,
-                firstNameUserToChat: user.firstName,
-                lastNameUserToChat: user.lastName,
-                currentUserId: currentUser.uid,
-                firstNameCurrentUser:currentUser.displayName.slice(0, currentUser.displayName.indexOf(" ")),
-                lastNameCurrentUser:currentUser.displayName.slice(currentUser.displayName.indexOf(" ") + 1)
+    const handleSelect = () => {
+        axios.post(baseUrlPostChats+"update", {
+            userToChatId:user.uid,
+            firstNameUserToChat: user.firstName,
+            lastNameUserToChat: user.lastName,
+            currentUserId: currentUser.uid,
+            firstNameCurrentUser:currentUser.displayName.slice(0, currentUser.displayName.indexOf(" ")),
+            lastNameCurrentUser:currentUser.displayName.slice(currentUser.displayName.indexOf(" ") + 1)
+        })
+            .then((response) => {
+                console.log(response)
             })
-            console.log(response.data)
-        } catch (err) {
-
-        }
-
+            .catch((err) => {
+                setErr(true)
+                console.log(err)
+            })
         setUsername("")
         setUser(null);
+        setErr(false)
     }
 
     return (

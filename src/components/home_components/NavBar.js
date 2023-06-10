@@ -5,13 +5,15 @@ import {useContext} from "react";
 
 
 const NavBar =()=>{
+
     const {currentUser}=useContext(AuthContext)
+
     return (
         <div className='navbar'>
-        <div className="user">
+            <div className="user">
             <span>{currentUser.displayName}</span>
             <button onClick={()=>signOut(auth)}>logout</button>
-        </div>
+            </div>
         </div>
     )
 }

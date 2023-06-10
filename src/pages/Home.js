@@ -4,10 +4,10 @@ import Chat from "../components/home_components/Chat";
 const Home =()=>{
     return (
         <div className='home'>
-        <div className="container">
+            <div className="container">
             <Sidebar/>
             <Chat/>
-        </div>
+            </div>
         </div>
     )
 }

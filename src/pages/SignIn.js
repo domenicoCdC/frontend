@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider,updateProfile} from "firebase/auth"
-import auth from "../../firebase";
+import auth from "../firebase";
 import { GoogleButton } from 'react-google-button';
 import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
@@ -17,42 +17,53 @@ export default function SignIn() {
 
     const handleSignIn = async (e) => {
         e.preventDefault();
-        try{
-            const {user} = await signInWithEmailAndPassword(auth, email, password)
-            console.log(user)
-            navigate("/")
-        }catch (err) {
-            console.log(err)
-            setError(true)
-        }
+        signInWithEmailAndPassword(auth,email,password)
+            .then((user) => {
+                console.log(user.user)
+                navigate("/")
+            })
+            .catch((err) => {
+                console.log(err)
+                setError(true)
+            })
+
     }
 
     const handleSignInWithGoogle = async (e) => {
         e.preventDefault();
         const provider = new GoogleAuthProvider();
-        try{
-            const {user} = await signInWithPopup(auth, provider);
-
-            console.log(user)
-            try {
-                const responsePostRequest = await  axios.post(baseUsersApisUrl+"new",{
-                    fistName: user.displayName.slice(0, user.displayName.indexOf(" ")),
-                    lastName: user.displayName.slice(user.displayName.indexOf(" ") + 1),
-                    email: user.email,
-                    uid: user.uid,
+        signInWithPopup(auth,provider)
+            .then((user) => {
+                console.log(user.user)
+                const userInfo = user.user;
+                console.log(userInfo.displayName)
+                axios.post(baseUsersApisUrl+"new",{
+                    fistName: userInfo.displayName.slice(0, userInfo.displayName.indexOf(" ")),
+                    lastName: userInfo.displayName.slice(userInfo.displayName.indexOf(" ") + 1),
+                    email: userInfo.email,
+                    uid: userInfo.uid,
                 })
-                const responseAddNewChatsPostRequest = await axios.post(baseChatsApisUrl+"newempty",{})
-                console.log(responseAddNewChatsPostRequest.data)
-
-                navigate("/")
-                console.log(responsePostRequest.data)
-            } catch (errore) {
-                console.log(errore)
-            }
-        } catch (err) {
-            console.log(err)
-            setError(true)
-        }
+                    .then((res) => {
+                        console.log(res.data);
+                        axios.post(baseChatsApisUrl+"newempty",{ userId: user.user.uid })
+                            .then((res) => {
+                                console.log(res.data)
+                                navigate("/")
+                            })
+                            .catch((err) => {
+                                setError(true);
+                                console.log(err);
+                            })
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                        setError(true)
+                    })
+            })
+            .catch((err) => {
+                console.log(err);
+                setError(true)
+            })
 
     }
 
