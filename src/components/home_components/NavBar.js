@@ -10,7 +10,7 @@ const NavBar =()=>{
         <div className='navbar'>
         <div className="user">
             <span>{currentUser.displayName}</span>
-            <button onClick={()=>signOut(auth)}>logout</button>
+            <button onClick={()=>signOut(auth)}>Logout</button>
         </div>
         </div>
     )
