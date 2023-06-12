@@ -36,16 +36,16 @@ export default function SignIn() {
             .then((user) => {
                 console.log(user.user)
                 axios.post(baseUsersApisUrl+"new",{
-                    firstName: user.user.displayName,
-                    lastName: user.user.displayName,
+                    firstName: user.user.displayName.slice(0,user.user.displayName.indexOf(" ")),
+                    lastName: user.user.displayName.slice(user.user.displayName.indexOf(" ")+1,user.user.displayName.length),
                     email: user.user.email,
                     uid: user.user.uid
                 })
-                    .then((res) => {
-                        console.log(res);
+                    .then((response) => {
+                        console.log(response);
                         axios.post(baseChatsApisUrl+"newempty",{ userId: user.user.uid })
-                            .then((res) => {
-                                console.log(res)
+                            .then((response) => {
+                                console.log(response)
                                 navigate("/")
                             })
                             .catch((err) => {

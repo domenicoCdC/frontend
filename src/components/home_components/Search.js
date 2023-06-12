@@ -20,8 +20,8 @@ const Search =()=>{
             ad esempio http....../users/Mario-Rossi mi restituirà l'user associato a mario rossi
          */
         const firstName = username.slice(0, username.indexOf(" "));
-        const lastName = username.slice(username.indexOf(" ")+1)
-        axios.get(baseUsersApisUrl+firstName+"-"+lastName)
+        const lastName = username.slice(username.indexOf(" ")+1,username.length)
+        axios.get(baseUsersApisUrl+firstName+"/"+lastName)
             .then((res) => {
                 console.log(res.data)
                 setUser(res.data)
