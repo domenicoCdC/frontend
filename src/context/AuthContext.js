@@ -7,8 +7,11 @@ export const AuthContext = createContext();
 export const AuthContextProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState({});
 
+    console.log(currentUser)
+
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, (user) => {
+            console.log("CAMBIATO UTENTE")
             setCurrentUser(user);
             //console.log(user);
         });
@@ -19,7 +22,7 @@ export const AuthContextProvider = ({ children }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ currentUser }}>
+        <AuthContext.Provider value={{ auth }}>
             {children}
         </AuthContext.Provider>
     );

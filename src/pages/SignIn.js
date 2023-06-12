@@ -34,7 +34,7 @@ export default function SignIn() {
         const provider = new GoogleAuthProvider();
         signInWithPopup(auth,provider)
             .then((user) => {
-
+                console.log(user.user)
                 axios.post(baseUsersApisUrl+"new",{
                     firstName: user.user.displayName.slice(0,user.user.displayName.indexOf(" ")),
                     lastName: user.user.displayName.slice(user.user.displayName.indexOf(" ")+1,user.user.displayName.length),

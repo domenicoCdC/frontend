@@ -17,7 +17,7 @@ const Chat =()=>{
                 <button>Add Friend</button>
                 </div>
             </div>
-            <Messages/>
+            {data.chatId && <Messages/>}
             <Input/>
         </div>
     )

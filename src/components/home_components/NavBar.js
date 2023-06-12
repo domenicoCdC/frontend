@@ -1,15 +1,14 @@
 import {signOut} from "firebase/auth";
-import auth from "../../firebase";
 import {AuthContext} from "../../context/AuthContext";
 import {useContext} from "react";
 
 
 const NavBar =()=>{
-    const {currentUser}=useContext(AuthContext)
+    const {auth}=useContext(AuthContext)
     return (
         <div className='navbar'>
         <div className="user">
-            <span>{currentUser.displayName}</span>
+            <span>{auth.currentUser && auth.currentUser.displayName}</span>
             <button onClick={()=>signOut(auth)}>logout</button>
         </div>
         </div>

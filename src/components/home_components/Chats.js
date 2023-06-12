@@ -8,21 +8,26 @@ const Chats =()=>{
     const baseGetChatsRealTimeUrl = "http://localhost:3001/api/chats/refresh/"
 
     const [chats, setChats] = useState([]);
-
-    const { currentUser } = useContext(AuthContext)
     const { dispatch } = useContext(ChatContext)
 
+    const {auth}=useContext(AuthContext)
+
+
     useEffect( () => {
-        axios.get(baseGetChatsRealTimeUrl+currentUser.uid)
-            .then(response => {
-                setChats(response.data)
-            })
-            .catch((err) => {
-                console.log(err)
-            });
 
+           if (auth.currentUser) {
+               console.log("CIAOOOOI")
+               axios.get(baseGetChatsRealTimeUrl + auth.currentUser.uid)
+                   .then(response => {
+                       setChats(response.data)
+                       console.log(response.data)
+                   })
+                   .catch((err) => {
+                       console.log(err)
+                   });
+           }
 
-    },[currentUser.uid])
+    },[auth])
 
     const handleSelect = (u) => {
         dispatch({ type: "CHANGE_USER", payload: u })
@@ -32,7 +37,7 @@ const Chats =()=>{
     //chat ordinate  Object.entries(chats)?.sort((a,b)=>b[1].date - a[1].date).map((chat) => (
     return (
         <div className='chats'>
-            {Object.entries(chats)?.map((chat) => (
+            {chats.length > 0 && Object.entries(chats)?.map((chat) => (
                 <div
                     className="userChat"
                     key={chat[0]}

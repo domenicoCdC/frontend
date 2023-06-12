@@ -5,12 +5,14 @@ import { AuthContext} from "../../context/AuthContext";
 
 const Search =()=>{
 
-    const {currentUser} = useContext(AuthContext)
+
+    const {auth} = useContext(AuthContext)
     const baseUsersApisUrl = "http://localhost:3001/api/users/"
     const baseUrlPostChats = "http://localhost:3001/api/chats/"
 
+
     const [username, setUsername] = useState("")
-    const [user, setUser] = useState(null);
+    const [userToSearch, setUserToSearch] = useState(null);
     const [err, setErr] = useState(false)
 
 
@@ -24,7 +26,7 @@ const Search =()=>{
         axios.get(baseUsersApisUrl+firstName+"/"+lastName)
             .then((res) => {
                 console.log(res.data)
-                setUser(res.data)
+                setUserToSearch(res.data)
             })
             .catch((err) => {
                 console.log(err)
@@ -39,13 +41,14 @@ const Search =()=>{
 
 
     const handleSelect = () => {
+        console.log(userToSearch)
         axios.put(baseUrlPostChats+"update", {
-            userToChatId:user.uid,
-            firstNameUserToChat: user.firstName,
-            lastNameUserToChat: user.lastName,
-            currentUserId: currentUser.uid,
-            firstNameCurrentUser:currentUser.displayName.slice(0, currentUser.displayName.indexOf(" ")),
-            lastNameCurrentUser:currentUser.displayName.slice(currentUser.displayName.indexOf(" ") + 1,currentUser.displayName.length)
+            userToChatId:userToSearch[0].uid,
+            firstNameUserToChat: userToSearch[0].firstName,
+            lastNameUserToChat: userToSearch[0].lastName,
+            currentUserId: auth.currentUser.uid,
+            firstNameCurrentUser:auth.currentUser.displayName.slice(0, auth.currentUser.displayName.indexOf(" ")),
+            lastNameCurrentUser:auth.currentUser.displayName.slice(auth.currentUser.displayName.indexOf(" ") + 1,auth.currentUser.displayName.length)
         })
             .then((response) => {
                 console.log(response)
@@ -55,8 +58,8 @@ const Search =()=>{
                 console.log(err)
             })
         setUsername("")
-        setUser(null);
-        setErr(false)
+        setUserToSearch(null);
+        setErr(false);
     }
 
     return (
@@ -71,10 +74,10 @@ const Search =()=>{
                 />
             </div>
             {err && <span>Utente non trovato!</span>}
-            {user && (
+            {userToSearch && (
                 <div className="userChat" onClick={handleSelect}>
                     <div className="userChatInfo">
-                        <span>{user[0].firstName +" "+user[0].lastName}</span>
+                        <span>{userToSearch[0].firstName +" "+userToSearch[0].lastName}</span>
                     </div>
                 </div>
             )}
