@@ -32,7 +32,7 @@ export default function SignIn() {
                         uid: user.user.uid
                     })
                         .then((res) => {
-                            console.log(res.data)
+                            console.log(res)
                             axios.post(baseChatsApisUrl+"newempty",{ userId: user.user.uid })
                                 .then((res) => {
                                     console.log(res)

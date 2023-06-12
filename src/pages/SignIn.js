@@ -29,25 +29,23 @@ export default function SignIn() {
 
     }
 
-    const handleSignInWithGoogle = async (e) => {
+    const handleSignInWithGoogle = (e) => {
         e.preventDefault();
         const provider = new GoogleAuthProvider();
         signInWithPopup(auth,provider)
             .then((user) => {
                 console.log(user.user)
-                const userInfo = user.user;
-                console.log(userInfo.displayName)
                 axios.post(baseUsersApisUrl+"new",{
-                    fistName: userInfo.displayName.slice(0, userInfo.displayName.indexOf(" ")),
-                    lastName: userInfo.displayName.slice(userInfo.displayName.indexOf(" ") + 1),
-                    email: userInfo.email,
-                    uid: userInfo.uid,
+                    firstName: user.user.displayName,
+                    lastName: user.user.displayName,
+                    email: user.user.email,
+                    uid: user.user.uid
                 })
                     .then((res) => {
-                        console.log(res.data);
+                        console.log(res);
                         axios.post(baseChatsApisUrl+"newempty",{ userId: user.user.uid })
                             .then((res) => {
-                                console.log(res.data)
+                                console.log(res)
                                 navigate("/")
                             })
                             .catch((err) => {
