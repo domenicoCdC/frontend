@@ -7,7 +7,7 @@ const Search =()=>{
 
     const {currentUser} = useContext(AuthContext)
     const baseUsersApisUrl = "http://localhost:3001/api/users/"
-    const baseUrlPostChats = "http://localhost:3000/api/chats/"
+    const baseUrlPostChats = "http://localhost:3001/api/chats/"
 
     const [username, setUsername] = useState("")
     const [user, setUser] = useState(null);
@@ -39,13 +39,13 @@ const Search =()=>{
 
 
     const handleSelect = () => {
-        axios.post(baseUrlPostChats+"update", {
+        axios.put(baseUrlPostChats+"update", {
             userToChatId:user.uid,
             firstNameUserToChat: user.firstName,
             lastNameUserToChat: user.lastName,
             currentUserId: currentUser.uid,
             firstNameCurrentUser:currentUser.displayName.slice(0, currentUser.displayName.indexOf(" ")),
-            lastNameCurrentUser:currentUser.displayName.slice(currentUser.displayName.indexOf(" ") + 1)
+            lastNameCurrentUser:currentUser.displayName.slice(currentUser.displayName.indexOf(" ") + 1,currentUser.displayName.length)
         })
             .then((response) => {
                 console.log(response)
