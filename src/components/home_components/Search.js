@@ -74,7 +74,7 @@ const Search =()=>{
             {user && (
                 <div className="userChat" onClick={handleSelect}>
                     <div className="userChatInfo">
-                        <span>{user[0].firstName + user[0].lastName}</span>
+                        <span>{user[0].firstName +" "+user[0].lastName}</span>
                     </div>
                 </div>
             )}
