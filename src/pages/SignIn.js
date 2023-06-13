@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider,updateProfile} from "firebase/auth"
-import auth from "../firebase";
+import {auth} from "../firebase";
 import { GoogleButton } from 'react-google-button';
 import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
@@ -34,7 +34,7 @@ export default function SignIn() {
         const provider = new GoogleAuthProvider();
         signInWithPopup(auth,provider)
             .then((user) => {
-                console.log(user.user)
+                //console.log(user.user)
                 axios.post(baseUsersApisUrl+"new",{
                     firstName: user.user.displayName.slice(0,user.user.displayName.indexOf(" ")),
                     lastName: user.user.displayName.slice(user.user.displayName.indexOf(" ")+1,user.user.displayName.length),

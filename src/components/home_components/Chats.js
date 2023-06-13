@@ -3,21 +3,22 @@ import {AuthContext} from "../../context/AuthContext";
 import {ChatContext} from "../../context/ChatContext";
 import axios from "axios";
 
+
 const Chats =()=>{
 
-    const baseGetChatsRealTimeUrl = "http://localhost:3001/api/chats/refresh/"
+    const baseChatsApisUrl = "http://localhost:3001/api/chats/"
 
     const [chats, setChats] = useState([]);
-    const { dispatch } = useContext(ChatContext)
 
-    const {auth}=useContext(AuthContext)
+    const { dispatch } = useContext(ChatContext);
+    const { currentUser }=useContext(AuthContext);
+
 
 
     useEffect( () => {
 
-           if (auth.currentUser) {
-               console.log("CIAOOOOI")
-               axios.get(baseGetChatsRealTimeUrl + auth.currentUser.uid)
+               console.log("sono nello useEffect di Chats");
+               axios.get(baseChatsApisUrl + "refresh/" + currentUser.uid)
                    .then(response => {
                        setChats(response.data)
                        console.log(response.data)
@@ -25,9 +26,9 @@ const Chats =()=>{
                    .catch((err) => {
                        console.log(err)
                    });
-           }
 
-    },[auth])
+
+    },[currentUser.uid])
 
     const handleSelect = (u) => {
         dispatch({ type: "CHANGE_USER", payload: u })
@@ -37,7 +38,8 @@ const Chats =()=>{
     //chat ordinate  Object.entries(chats)?.sort((a,b)=>b[1].date - a[1].date).map((chat) => (
     return (
         <div className='chats'>
-            {chats.length > 0 && Object.entries(chats)?.map((chat) => (
+
+            {Object.entries(chats)?.map((chat) => (
                 <div
                     className="userChat"
                     key={chat[0]}
@@ -49,6 +51,7 @@ const Chats =()=>{
                     </div>
                 </div>
             ))}
+
         </div>
     )
 }

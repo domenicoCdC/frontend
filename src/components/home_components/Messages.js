@@ -1,23 +1,23 @@
 import React, {useContext, useEffect, useState} from "react";
 import Message from "./Message";
-import {ChatContext} from "../../context/ChatContext";
+import { ChatContext } from "../../context/ChatContext";
 import axios from "axios";
 const Messages =()=>{
 
     const [messages, setMessages] = useState([])
-    const {data} = useContext(ChatContext)
+    const { data } = useContext(ChatContext)
 
-    const baseChatsApisUrl = "http://localhost:3000/api/chats/";
+    const baseChatsApisUrl = "http://localhost:3001/api/chats/";
 
     useEffect( () => {
 
-        axios.get(baseChatsApisUrl+"refreshchat/"+data.chatId)
-            .then((response) =>{
-                setMessages(response.data.messages)
-            })
-            .catch((err) => {
-                console.log(err)
-            })
+                axios.get(baseChatsApisUrl+"refreshchat/"+data.chatId)
+                    .then((response) =>{
+                        setMessages(response.data.messages)
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                    })
 
 
     },[data.chatId])

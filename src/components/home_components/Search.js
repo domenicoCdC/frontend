@@ -1,17 +1,18 @@
 import {useContext, useState} from 'react'
 import axios from "axios";
 
-import { AuthContext} from "../../context/AuthContext";
+import {AuthContext} from "../../context/AuthContext";
+
 
 const Search =()=>{
 
 
-    const {auth} = useContext(AuthContext)
+    const {currentUser} = useContext(AuthContext)
     const baseUsersApisUrl = "http://localhost:3001/api/users/"
     const baseUrlPostChats = "http://localhost:3001/api/chats/"
 
 
-    const [username, setUsername] = useState("")
+    const [username, setUsername] = useState("");
     const [userToSearch, setUserToSearch] = useState(null);
     const [err, setErr] = useState(false)
 
@@ -21,18 +22,22 @@ const Search =()=>{
             e le utilizzo per chiamare l'api http://localhost:3001/api/users/?fullName
             ad esempio http....../users/Mario-Rossi mi restituirà l'user associato a mario rossi
          */
+        setErr(false)
         const firstName = username.slice(0, username.indexOf(" "));
         const lastName = username.slice(username.indexOf(" ")+1,username.length)
         axios.get(baseUsersApisUrl+firstName+"/"+lastName)
             .then((res) => {
                 console.log(res.data)
                 setUserToSearch(res.data)
+                setErr(false)
             })
             .catch((err) => {
                 console.log(err)
                 setErr(true)
             })
-        setErr(false)
+
+        setUsername("")
+
     }
 
     const handleKey = e => {
@@ -41,23 +46,25 @@ const Search =()=>{
 
 
     const handleSelect = () => {
-        console.log(userToSearch)
+        const [currentFirstName,currentLastName] = currentUser.displayName.split(" ");
         axios.put(baseUrlPostChats+"update", {
-            userToChatId:userToSearch[0].uid,
-            firstNameUserToChat: userToSearch[0].firstName,
-            lastNameUserToChat: userToSearch[0].lastName,
-            currentUserId: auth.currentUser.uid,
-            firstNameCurrentUser:auth.currentUser.displayName.slice(0, auth.currentUser.displayName.indexOf(" ")),
-            lastNameCurrentUser:auth.currentUser.displayName.slice(auth.currentUser.displayName.indexOf(" ") + 1,auth.currentUser.displayName.length)
+            userToChatId:userToSearch.uid,
+            firstNameUserToChat: userToSearch.firstName,
+            lastNameUserToChat: userToSearch.lastName,
+            currentUserId: currentUser.uid,
+            firstNameCurrentUser: currentFirstName,
+            lastNameCurrentUser: currentLastName
         })
             .then((response) => {
-                console.log(response)
+                console.log(response.data)
+
             })
             .catch((err) => {
                 setErr(true)
-                console.log(err)
-            })
-        setUsername("")
+                console.log(err.data)
+                setUsername("")
+            });
+
         setUserToSearch(null);
         setErr(false);
     }
@@ -77,7 +84,7 @@ const Search =()=>{
             {userToSearch && (
                 <div className="userChat" onClick={handleSelect}>
                     <div className="userChatInfo">
-                        <span>{userToSearch[0].firstName +" "+userToSearch[0].lastName}</span>
+                        <span>{userToSearch.firstName +" "+userToSearch.lastName}</span>
                     </div>
                 </div>
             )}

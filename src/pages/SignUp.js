@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {createUserWithEmailAndPassword, updateProfile} from "firebase/auth"
-import auth from "../firebase";
+import {auth} from "../firebase";
 import {Link, useNavigate} from "react-router-dom";
 import axios from "axios"
 
@@ -24,7 +24,7 @@ export default function SignIn() {
                 updateProfile(user.user, {
                     displayName: firstName + " " + lastName
                 }).then(r => {
-                    console.log(r)
+
                     axios.post(baseUsersApisUrl+"new", {
                         firstName: firstName,
                         lastName: lastName,
@@ -32,28 +32,33 @@ export default function SignIn() {
                         uid: user.user.uid
                     })
                         .then((res) => {
-                            console.log(res)
+                            console.log(res.data)
                             axios.post(baseChatsApisUrl+"newempty",{ userId: user.user.uid })
                                 .then((res) => {
-                                    console.log(res)
+                                    console.log(res.data)
+                                    setloading(false)
                                     navigate("/")
                                 })
                                 .catch((err) => {
                                     setError(true)
+                                    setloading(false)
                                     console.log(err)
                                 })
                         })
                         .catch((err) => {
+                            setloading(false)
                             setError(true)
                             console.log(err)
                         })
                 })
                     .catch((err) => {
+                        setloading(false)
                         setError(true)
                         console.log(err)
                     })
             })
             .catch((err) => {
+                setloading(false)
                 setError(true)
                 console.log(err)
             });
@@ -69,6 +74,7 @@ export default function SignIn() {
                 <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)}/>
                 <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)}/>
                 <button type="submit">Register</button>
+                {loading && <span>Attendere prego...</span>}
                 <p>Già iscritto? <Link to="/login">Login</Link></p>
                 {error && <span>Qualcosa è andato storto</span>}
             </form>

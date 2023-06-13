@@ -9,12 +9,12 @@ import {useContext} from "react";
 
 function App() {
 
-    const{auth}=useContext(AuthContext)
+    const{ currentUser }=useContext(AuthContext)
 
     //creo un componentne in grado di "proteggere la route Home in quanto posso accendere a quest'ultima solo dopo aver fatto il login
     // e quindi popolato currentUser che proviene da authContext
     const ProtectedRoute=({children})=>{
-        if(!auth){
+        if(!currentUser){
             return<Navigate to="/login"/>
         }
         return children;
