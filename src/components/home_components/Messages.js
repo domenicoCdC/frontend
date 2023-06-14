@@ -11,14 +11,16 @@ const Messages =()=>{
 
     useEffect( () => {
 
-                axios.get(baseChatsApisUrl+"refreshchat/"+data.chatId)
-                    .then((response) =>{
-                        setMessages(response.data.messages)
-                    })
-                    .catch((err) => {
-                        console.log(err)
-                    })
-
+        const getMessage = () => axios.get(baseChatsApisUrl+"refreshchat/"+data.chatId)
+            .then((response) =>{
+                setMessages(response.data.messages)
+            })
+            .catch((err) => {
+                console.log(err)
+            });
+        const interval = setInterval(() => getMessage(),500);
+        getMessage();
+        return () => clearInterval(interval)
 
     },[data.chatId])
 

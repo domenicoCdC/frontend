@@ -17,16 +17,18 @@ const Chats =()=>{
 
     useEffect( () => {
 
-               console.log("sono nello useEffect di Chats");
-               axios.get(baseChatsApisUrl + "refresh/" + currentUser.uid)
-                   .then(response => {
-                       setChats(response.data)
-                       console.log(response.data)
-                   })
-                   .catch((err) => {
-                       console.log(err)
-                   });
-
+        console.log("sono nello useEffect di Chats");
+        const getChats = () => axios.get(baseChatsApisUrl + "refresh/" + currentUser.uid)
+            .then(response => {
+                setChats(response.data)
+                console.log(response.data)
+            })
+            .catch((err) => {
+                console.log(err)
+            });
+        const interval = setInterval(() => getChats(), 500);
+        getChats();
+        return () => clearInterval(interval)
 
     },[currentUser.uid])
 
