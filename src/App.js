@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import {AuthContext} from "./context/AuthContext";
 import {useContext} from "react";
+import Profile from "./components/home_components/Profile";
 
 function App() {
 
@@ -34,8 +35,14 @@ function App() {
                             </ProtectedRoute>
                         }
                     />
+                    <Route path="profile" element={
+                        <ProtectedRoute>
+                            <Profile />
+                        </ProtectedRoute>
+                    }/>
                     <Route path="login" element={<SignIn/>}/>
                     <Route path="register" element={<SignUp/>}/>
+
                 </Route>
             </Routes>
         </BrowserRouter>

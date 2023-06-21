@@ -2,6 +2,19 @@
   text-align: center;
 }
 
+.profile {
+  border: 1px solid black;
+  border-radius: 10px;
+  width: 75%;
+  height: 90%;
+  display: flex;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  background-color: white;
+}
+
 .formContainer {
   background-color: cornflowerblue;
   height: 100vh;
