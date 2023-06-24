@@ -67,15 +67,15 @@ export default function SignIn() {
     return (
         <div className="formContainer">
             <div className='formWrapper'>
-            <span className='title'>Register</span>
+            <span className='title'>Registrati</span>
             <form onSubmit={handleSignUp}>
-                <input type="firstName" placeholder="Name" value={firstName} onChange={e => setFirstName(e.target.value)}/>
-                <input type="lastName" placeholder="Surname" value={lastName} onChange={e => setLastName(e.target.value)}/>
+                <input type="firstName" placeholder="Nome" value={firstName} onChange={e => setFirstName(e.target.value)}/>
+                <input type="lastName" placeholder="Cognome" value={lastName} onChange={e => setLastName(e.target.value)}/>
                 <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)}/>
                 <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)}/>
-                <button type="submit">Register</button>
+                <button type="submit">Registrati</button>
                 {loading && <span>Attendere prego...</span>}
-                <p>Già iscritto? <Link to="/login">Login</Link></p>
+                <p>Hai già un account? <Link to="/login">Accedi</Link></p>
                 {error && <span>Qualcosa è andato storto</span>}
             </form>
             </div>

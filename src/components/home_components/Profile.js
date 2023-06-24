@@ -6,13 +6,13 @@ export default function Profile() {
     const {currentUser} = useContext(AuthContext);
     const fistName = currentUser.displayName.slice(0, currentUser.displayName.indexOf(" "));
     const lastName = currentUser.displayName.slice(currentUser.displayName.indexOf(" "));
+    const email = currentUser.email;
+
     return (
             <div className='home'>
                     <div className="profile">
-
-                        <span>Nome:{fistName}</span>
-                        <span>Cognome: {lastName}</span>
-
+                        <span className="fullName">{fistName} {lastName}</span>
+                        <span className="email">{email}</span>
                     </div>
             </div>
 

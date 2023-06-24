@@ -1,21 +1,16 @@
 import {useContext, useState} from 'react'
 import axios from "axios";
-
 import {AuthContext} from "../../context/AuthContext";
 
-
 const Search =()=>{
-
 
     const {currentUser} = useContext(AuthContext)
     const baseUsersApisUrl = "http://localhost:3001/api/users/"
     const baseUrlPostChats = "http://localhost:3001/api/chats/"
 
-
     const [username, setUsername] = useState("");
     const [userToSearch, setUserToSearch] = useState(null);
     const [err, setErr] = useState(false)
-
 
     const handleSearch =  () =>  {
         /*dall'username cercato dall'utente splitto in due variabili il suo nome e cognome
@@ -43,7 +38,6 @@ const Search =()=>{
     const handleKey = e => {
         e.code === "Enter" && handleSearch();
     }
-
 
     const handleSelect = () => {
         const [currentFirstName,currentLastName] = currentUser.displayName.split(" ");
@@ -74,7 +68,7 @@ const Search =()=>{
             <div className="searchForm">
                 <input
                     type="text"
-                    placeholder="Find a user"
+                    placeholder="Cerca un utente..."
                     onKeyDown={handleKey}
                     onChange={(e) => setUsername(e.target.value)}
                     value={username}
@@ -92,4 +86,3 @@ const Search =()=>{
     );
 }
 export default Search
-

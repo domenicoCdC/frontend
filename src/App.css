@@ -9,10 +9,19 @@
   height: 90%;
   display: flex;
   overflow: hidden;
-  align-items: center;
-  justify-content: center;
   color: black;
   background-color: white;
+}
+
+.profile .fullName {
+  padding: 20px 20px 20px 30px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.profile .email {
+  font-size: 17px;
+  padding-top: 26px;
 }
 
 .formContainer {
@@ -139,7 +148,8 @@
   align-items: center;
   color: black;
   cursor: pointer;
-  border: 1px solid navy;
+  border-top: 1px solid navy;
+  border-bottom: 1px solid navy;
   border-radius: 5px;
 }
 
@@ -218,17 +228,19 @@
 }
 
 .messageContent{
-  background-color: white;
-  padding: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
   border-radius: 0px 10px 10px 10px;
+  background-color: lightgreen;
 }
 
 .message.owner {
   flex-direction: row-reverse;
 }
 
-.messageContent.owner{
-  background-color: darkseagreen;
+.messageContent.owner {
+  background-color: white;
+  border-radius: 10px 0px 10px 10px;
 }
 
 .input {

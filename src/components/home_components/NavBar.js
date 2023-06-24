@@ -11,14 +11,10 @@ const NavBar =()=>{
         <div className='navbar'>
             <div className="user">
                 <span>{currentUser && currentUser.displayName}</span>
-                <button onClick={()=>signOut(auth)}>logout</button>
-                <button onClick={() => navigate("/profile")}>Profile</button>
+                <button onClick={() => navigate("/profile")}>Profilo</button>
+                <button onClick={()=>signOut(auth)}>Logout</button>
             </div>
         </div>
     )
 }
 export default NavBar
-
-/*<span>{currentUser.displayName}</span>
-* NEL CASO DI AGGIUNTA DEL NOME NELLA REGISTRAZIONE
-* */

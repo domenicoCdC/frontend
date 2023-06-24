@@ -9,7 +9,6 @@ const Input =()=>{
     const [text,setText]=useState("");
     const [error, setError] = useState(false)
 
-
     const {currentUser} = useContext(AuthContext)
     const {data}=useContext(ChatContext)
 
@@ -29,7 +28,6 @@ const Input =()=>{
                 setError(true)
             })
         setText("")
-
     }
 
     return (
@@ -40,7 +38,7 @@ const Input =()=>{
                    placeholder='Inizia a chattare...'/>
             <div className="send">
                 {error && <span>Mh..qualcosa è andata storto!</span>}
-                <button onClick={handleSend}> Send</button>
+                <button onClick={handleSend}>Invia</button>
             </div>
         </div>
     )

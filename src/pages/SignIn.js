@@ -11,7 +11,6 @@ export default function SignIn() {
     const [password,setPassword] = useState('')
     const navigate=useNavigate()
 
-
     const baseUsersApisUrl = 'http://localhost:3001/api/users/';
     const baseChatsApisUrl="http://localhost:3001/api/chats/"
 
@@ -26,7 +25,6 @@ export default function SignIn() {
                 console.log(err)
                 setError(true)
             })
-
     }
 
     const handleSignInWithGoogle = (e) => {
@@ -62,20 +60,19 @@ export default function SignIn() {
                 console.log(err);
                 setError(true)
             })
-
     }
 
     return (
         <div className="formContainer">
             <div className='formWrapper'>
-                <span className='title'>Login</span>
+                <span className='title'>Accedi</span>
                 <form onSubmit={handleSignIn}>
                     <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)}/>
                     <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)}/>
                     <button type="submit">Login</button>
                     <GoogleButton label='Continua con Google' onClick={handleSignInWithGoogle} />
                     {error && <span>Qualcosa è andato storto</span>}
-                    <p>Don't you have an account? <Link to="/register">Register</Link></p>
+                    <p>Non hai un account? <Link to="/register">Registrati</Link></p>
                 </form>
             </div>
         </div>
