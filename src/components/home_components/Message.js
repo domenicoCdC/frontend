@@ -9,9 +9,9 @@ const Message =({message})=>{
 
     const ref = useRef();
 
-    useEffect(() => {
-        ref.current?.scrollIntoView({ behavior: "smooth" });
-    }, [message])
+    //useEffect(() => {
+        //ref.current?.scrollIntoView({ behavior: "smooth" });
+    //}, [message])
 
     return (
         <div ref={ref} className={`message ${message.senderId === currentUser.uid && "owner"}`}>
