@@ -1,6 +1,7 @@
 import {AuthContext} from "../../context/AuthContext";
 import React, {useContext, useEffect, useState} from "react";
 import axios from "axios";
+import {v4} from "uuid";
 
 /*const acceptRequestHandler = async (fromUser, toUser) => {
         try {
@@ -33,19 +34,29 @@ import axios from "axios";
     };
      */
 
-export default function Profile() {
+const Profile = () => {
     const {currentUser} = useContext(AuthContext);
-    const fistName = currentUser.displayName.slice(0, currentUser.displayName.indexOf(" "));
-    const lastName = currentUser.displayName.slice(currentUser.displayName.indexOf(" "));
-    const email = currentUser.email;
+
+    const [fistName,setFirstName] = useState('');
+    const [lastName, setLastName] = useState('')
+    const [email,setEmail] = useState('')
+
     const [sentFriendRequests, setSentFriendRequests] = useState([])
     const [receivedFriendRequests, setReceivedFriendRequests]= useState([])
 
+
+
     useEffect(() => {
+
+        console.log("stampo utente nello useeffect " );
+        console.log(currentUser)
         axios.get(`http://localhost:3001/api/friend-requests/received/${currentUser.uid}`)
             .then((response) => {
-                console.log(response)
+                console.log(response.data)
                 setReceivedFriendRequests(response.data)
+                setFirstName(currentUser.displayName.slice(0, currentUser.displayName.indexOf(" ")));
+                setLastName(currentUser.displayName.slice(currentUser?.displayName.indexOf(" ")+1, currentUser.displayName.length));
+                setEmail(currentUser.email);
             })
             .catch((err) => {
                 console.log(err)
@@ -53,13 +64,19 @@ export default function Profile() {
 
         axios.get(`http://localhost:3001/api/friend-requests/sent/${currentUser.uid}`)
             .then((response) => {
-                console.log(response)
+                console.log(response.data)
                 setSentFriendRequests(response.data)
+                setFirstName(currentUser.displayName.slice(0, currentUser.displayName.indexOf(" ")));
+                setLastName(currentUser.displayName.slice(currentUser?.displayName.indexOf(" ")+1, currentUser.displayName.length));
+                setEmail(currentUser.email);
             })
             .catch((err) => {
                 console.log(err)
             })
-    }, [currentUser.uid])
+
+
+
+    }, [currentUser])
 
     return (
             <div className='home'>
@@ -68,15 +85,16 @@ export default function Profile() {
                     <span className="email">{email}</span>
                     <div>
                         {receivedFriendRequests?.map((request) => (
-                            <span> Richiesta ricevuta da: {request.fromUserId}</span>
+                            <span key={v4()}> Richiesta ricevuta da: {request.fromUserId}</span>
                         ))}
                     </div>
                     <div>
                         {sentFriendRequests?.map((request) => (
-                            <span> Richiesta inviata a: {request.toUserId}</span>
+                            <span key={v4()}> Richiesta inviata a: {request.toUserId}</span>
                         ))}
                     </div>
                 </div>
             </div>
     )
 }
+export default Profile;
