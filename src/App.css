@@ -206,6 +206,17 @@
   cursor: pointer;
 }
 
+.profile button {
+  border: none;
+  background-color: coral;
+  color: floralwhite;
+  font-size: 16px;
+  border-radius: 3px;
+  font-weight: bold;
+  cursor: pointer;
+  height: 30px;
+}
+
 .messages {
   background-color: beige;
   padding: 10px;

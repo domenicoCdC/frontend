@@ -1,7 +1,8 @@
 import {AuthContext} from "../../context/AuthContext";
 import React, {useContext, useEffect, useState} from "react";
-import axios from "axios";
+import axios, {request} from "axios";
 import {v4} from "uuid";
+import ReactLoading from "react-loading";
 
 /*const acceptRequestHandler = async (fromUser, toUser) => {
         try {
@@ -40,61 +41,174 @@ const Profile = () => {
     const [fistName,setFirstName] = useState('');
     const [lastName, setLastName] = useState('')
     const [email,setEmail] = useState('')
+    const [usersInfoReceiver, setUsersInfoReceiver] = useState([])
+    const [friendsInfo, setFriendsInfo] = useState([])
 
-    const [sentFriendRequests, setSentFriendRequests] = useState([])
-    const [receivedFriendRequests, setReceivedFriendRequests]= useState([])
+    const [receivedFriendsRequests, setReceivedFriendsRequests] = useState([])
 
+
+    const [acceptedFriendsRequests, setAcceptedFriendsRequests] = useState([])
+
+
+    const [loading,setLoading] = useState(false)
+    const [isAccepted, setAccepted] = useState(false);
+    const [isRejectButtonDisabled, setRejectButtonDisabled] = useState(false);
+    const [isDeleted, setDeleted] = useState(false)
 
 
     useEffect(() => {
-
-        console.log("stampo utente nello useeffect " );
-        console.log(currentUser)
-        axios.get(`http://localhost:3001/api/friend-requests/received/${currentUser.uid}`)
-            .then((response) => {
-                console.log(response.data)
-                setReceivedFriendRequests(response.data)
-                setFirstName(currentUser.displayName.slice(0, currentUser.displayName.indexOf(" ")));
-                setLastName(currentUser.displayName.slice(currentUser?.displayName.indexOf(" ")+1, currentUser.displayName.length));
-                setEmail(currentUser.email);
-            })
-            .catch((err) => {
-                console.log(err)
-            })
-
-        axios.get(`http://localhost:3001/api/friend-requests/sent/${currentUser.uid}`)
-            .then((response) => {
-                console.log(response.data)
-                setSentFriendRequests(response.data)
-                setFirstName(currentUser.displayName.slice(0, currentUser.displayName.indexOf(" ")));
-                setLastName(currentUser.displayName.slice(currentUser?.displayName.indexOf(" ")+1, currentUser.displayName.length));
-                setEmail(currentUser.email);
-            })
-            .catch((err) => {
-                console.log(err)
-            })
-
-
+        setLoading(true)
+        fetchReceiverUsersAsObjects();
+        fetchFriendsAsObjects();
 
     }, [currentUser])
+
+    //Restituisce un array degli utenti da cui hai ricevuto richiesta d'amicizia
+    const fetchReceiverUsersAsObjects = async () => {
+        setLoading(true);
+
+        try {
+            setFirstName(currentUser.displayName.slice(0, currentUser.displayName.indexOf(" ")));
+            setLastName(currentUser.displayName.slice(currentUser?.displayName.indexOf(" ")+1, currentUser.displayName.length));
+            setEmail(currentUser.email);
+            const receivedPendingFriendsRequestsResponse = await axios.get(`http://localhost:3001/api/friend-requests/received/pending/${currentUser.uid}`)
+            //const sendFriendsRequestResponse = await axios.get(`http://localhost:3001/api/friend-requests/sent/${currentUser.uid}`)
+            setReceivedFriendsRequests(receivedPendingFriendsRequestsResponse.data);
+            const friendRequests = receivedPendingFriendsRequestsResponse.data;
+
+            console.log("Array di richieste " + friendRequests);
+
+            const promises = friendRequests.map(async (userId) => {
+                const userResponse = await axios.get(`http://localhost:3001/api/users/${userId.fromUserId}`)
+                return userResponse.data;
+            });
+            const userObjects = await Promise.all(promises);
+            setUsersInfoReceiver(userObjects);
+            console.log(usersInfoReceiver);
+            setLoading(false)
+        }catch (error){
+            console.log(error);
+            setLoading(false)
+        }
+
+    }
+
+
+    const fetchFriendsAsObjects = async () => {
+        setLoading(true);
+
+        try {
+
+            const acceptedSentFriendsRequestsResponse = await axios.get(`http://localhost:3001/api/friend-requests/sent/accepted/${currentUser.uid}`)
+            const acceptedReceivedFriendsRequestsResponse = await axios.get(`http://localhost:3001/api/friend-requests/received/accepted/${currentUser.uid}`)
+            //setAcceptedFriendsRequests(acceptedSentFriendsRequestsResponse.data.concat(acceptedReceivedFriendsRequestsResponse.data))
+            const friends = acceptedSentFriendsRequestsResponse.data.concat(acceptedReceivedFriendsRequestsResponse.data);
+
+
+            const promises = friends.map(async (userId) => {
+                let userResponse;
+                if (userId.fromUserId === currentUser.uid) {
+                    userResponse = await axios.get(`http://localhost:3001/api/users/${userId.toUserId}`);
+                } else {
+                    userResponse = await axios.get(`http://localhost:3001/api/users/${userId.fromUserId}`)
+                }
+                return userResponse.data;
+            });
+            const userObjects = await Promise.all(promises);
+            setFriendsInfo(userObjects);
+            console.log(friendsInfo);
+            setLoading(false)
+        }catch (error){
+            console.log(error);
+            setLoading(false)
+        }
+
+    }
+
+
+
+
+
+
+    //GESTIONE delle richieste d'amicizia
+    const handleRequest = async (fromUid,type) => {
+        setLoading(true)
+        setAccepted(false);
+        if (type === "reject") {
+            try {
+                const response = await axios.put(`http://localhost:3001/api/friend-requests/from${fromUid}to${currentUser.uid}/reject`);
+                console.log(response.data);
+                setLoading(false)
+            } catch (err) {
+                console.log(err);
+                setLoading(false)
+            }
+        }
+        else if (type === "accept") {
+            try {
+                const response = await axios.put(`http://localhost:3001/api/friend-requests/from${fromUid}to${currentUser.uid}/accept`);
+                setAccepted(true);
+                console.log(response.data);
+                setLoading(false);
+
+            } catch (err) {
+                console.log(err);
+                setLoading(false)
+            }
+        }
+        else if (type === "delete") {
+            try {
+                const response = await axios.delete(`http://localhost:3001/api/friend-requests/from${fromUid}to${currentUser.uid}/delete`)
+                setDeleted(true);
+                console.log(response.data)
+                setLoading(false);
+            } catch (err) {
+                console.log(err);
+                setLoading(false);
+            }
+        }
+
+    }
+
+
 
     return (
             <div className='home'>
                 <div className="profile">
-                    <span className="fullName">{fistName} {lastName}</span>
-                    <span className="email">{email}</span>
-                    <div>
-                        {receivedFriendRequests?.map((request) => (
-                            <span key={v4()}> Richiesta ricevuta da: {request.fromUserId}</span>
-                        ))}
-                    </div>
-                    <div>
-                        {sentFriendRequests?.map((request) => (
-                            <span key={v4()}> Richiesta inviata a: {request.toUserId}</span>
-                        ))}
-                    </div>
+                    {!loading ? (
+                        <>
+                            <span className="fullName">{fistName} {lastName}</span>
+                            <span className="email">{email}</span>
+                            <button onClick={fetchReceiverUsersAsObjects && fetchFriendsAsObjects}>Aggiorna</button>
+
+                            <div>
+                                {usersInfoReceiver.map((request) => (
+                                    <div key={v4()}>
+                                        Richieste ricevute
+                                        <span key={v4()}> {request.firstName} {request.lastName}</span>
+                                        <button key={v4()} onClick={() => handleRequest(request.uid, "accept")}>Accetta</button>
+                                        <button key={v4()} onClick={() => handleRequest(request.uid, "reject")}>Rifiuta</button>
+                                    </div>
+                                ))}
+                            </div>
+                            <div>
+                                Lista amici
+                                {friendsInfo.map((request) => (
+                                    <div key={v4()}>
+                                        <span key={v4()}> {request.firstName} {request.lastName}</span>
+                                        <button key={v4()} onClick={() => handleRequest(request.uid, "delete")}>Elimina</button>
+                                    </div>
+                                ))}
+
+                            </div>
+
+                        </>
+                    ) : (
+                        <ReactLoading type="spin" height={100} width={50} color="#6495EDFF"></ReactLoading>
+                    )}
                 </div>
             </div>
     )
 }
 export default Profile;
+
