@@ -4,17 +4,20 @@ import {auth} from "../firebase";
 import { GoogleButton } from 'react-google-button';
 import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
+import ReactLoading from "react-loading";
 
 export default function SignIn() {
     const [error,setError] = useState(false)
     const [email, setEmail] = useState('')
     const [password,setPassword] = useState('')
-    const navigate=useNavigate()
+    const navigate=useNavigate();
+    const [isLoading, setLoading] = useState(false);
 
     const baseUsersApisUrl = 'http://localhost:3001/api/users/';
     const baseChatsApisUrl="http://localhost:3001/api/chats/"
 
     const handleSignIn = async (e) => {
+        setLoading(true);
         e.preventDefault();
         signInWithEmailAndPassword(auth,email,password)
             .then((user) => {
@@ -24,10 +27,12 @@ export default function SignIn() {
             .catch((err) => {
                 console.log(err)
                 setError(true)
+                setLoading(false)
             })
     }
 
     const handleSignInWithGoogle = (e) => {
+        setLoading(true);
         e.preventDefault();
         const provider = new GoogleAuthProvider();
         signInWithPopup(auth,provider)
@@ -48,32 +53,42 @@ export default function SignIn() {
                             })
                             .catch((err) => {
                                 setError(true);
+                                setLoading(false)
                                 console.log(err);
                             })
                     })
                     .catch((err) => {
                         console.log(err)
+                        setLoading(false);
                         setError(true)
                     })
             })
             .catch((err) => {
                 console.log(err);
-                setError(true)
+                setError(true);
+                setLoading(false);
             })
     }
 
     return (
+
         <div className="formContainer">
             <div className='formWrapper'>
-                <span className='title'>Accedi</span>
-                <form onSubmit={handleSignIn}>
-                    <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)}/>
-                    <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)}/>
-                    <button type="submit">Login</button>
-                    <GoogleButton label='Continua con Google' onClick={handleSignInWithGoogle} />
-                    {error && <span>Qualcosa è andato storto</span>}
-                    <p>Non hai un account? <Link to="/register">Registrati</Link></p>
-                </form>
+                {!isLoading ? (
+                    <>
+                        <span className='title'>Accedi</span>
+                        <form onSubmit={handleSignIn}>
+                            <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)}/>
+                            <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)}/>
+                            <button type="submit">Login</button>
+                            <GoogleButton label='Continua con Google' onClick={handleSignInWithGoogle} />
+                            {error && <span>Qualcosa è andato storto</span>}
+                            <p>Non hai un account? <Link to="/register">Registrati</Link></p>
+                        </form>
+                    </>
+                ) : (
+                    <ReactLoading type="spin" height={100} width={50} color="#6495EDFF"></ReactLoading>
+                )}
             </div>
         </div>
     )

@@ -206,7 +206,7 @@
   cursor: pointer;
 }
 
-.profile button {
+.profile .updateButton {
   border: none;
   background-color: coral;
   color: floralwhite;
@@ -215,6 +215,45 @@
   font-weight: bold;
   cursor: pointer;
   height: 30px;
+  position: relative;
+  right: 310px;
+  top: 10%;
+
+}
+.profile .acceptButton {
+  border: none;
+  background-color: #0f7c11;
+  color: floralwhite;
+  font-size: 16px;
+  border-radius: 3px;
+  font-weight: bold;
+  cursor: pointer;
+  height: 30px;
+}
+
+.profile .rejectButton {
+  border: none;
+  background-color: #dc1919;
+  color: floralwhite;
+  font-size: 16px;
+  border-radius: 3px;
+  font-weight: bold;
+  cursor: pointer;
+  height: 30px;
+}
+
+.profile .goBackButton {
+  border: none;
+  background-color: coral;
+  color: floralwhite;
+  font-size: 16px;
+  border-radius: 3px;
+  font-weight: bold;
+  cursor: pointer;
+  height: 30px;
+  position: relative;
+  left: 5px;
+  top: 93%;
 }
 
 .messages {
@@ -300,3 +339,5 @@
   border-radius: 100px;
   padding: 20px;
 }
+
+

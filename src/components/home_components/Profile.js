@@ -3,6 +3,7 @@ import React, {useContext, useEffect, useState} from "react";
 import axios, {request} from "axios";
 import {v4} from "uuid";
 import ReactLoading from "react-loading";
+import {useNavigate} from "react-router-dom";
 
 /*const acceptRequestHandler = async (fromUser, toUser) => {
         try {
@@ -37,7 +38,7 @@ import ReactLoading from "react-loading";
 
 const Profile = () => {
     const {currentUser} = useContext(AuthContext);
-
+    const navigate = useNavigate();
     const [fistName,setFirstName] = useState('');
     const [lastName, setLastName] = useState('')
     const [email,setEmail] = useState('')
@@ -185,7 +186,7 @@ const Profile = () => {
                         <>
                             <span className="fullName">{fistName} {lastName}</span>
                             <span className="email">{email}</span>
-                            <button onClick={fetchReceiverUsersAsObjects && fetchFriendsAsObjects}>Aggiorna</button>
+                            <button className="updateButton" onClick={fetchReceiverUsersAsObjects && fetchFriendsAsObjects}>Aggiorna</button>
 
                             <div>
                                 {usersInfoReceiver.length === 0 ? (
@@ -198,8 +199,8 @@ const Profile = () => {
                                             <div key={v4()}>
                                                 Richieste ricevute
                                                 <span key={v4()}> {request.firstName} {request.lastName}</span>
-                                                <button key={v4()} onClick={() => handleRequest(request.uid, "accept")}>Accetta</button>
-                                                <button key={v4()} onClick={() => handleRequest(request.uid, "reject")}>Rifiuta</button>
+                                                <button className="acceptButton" key={v4()} onClick={() => handleRequest(request.uid, "accept")}>Accetta</button>
+                                                <button className="rejectButton" key={v4()} onClick={() => handleRequest(request.uid, "reject")}>Rifiuta</button>
                                             </div>
                                         ))}
                                     </>
@@ -223,9 +224,8 @@ const Profile = () => {
                                         </>
                                     )
                                 }
-
-
                             </div>
+                            <button className="goBackButton" onClick={() => navigate("/")}>Indietro</button>
 
                         </>
                     ) : (
