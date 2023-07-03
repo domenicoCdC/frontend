@@ -218,7 +218,7 @@ const Profile = () => {
                                         {friendsInfo.map((request) => (
                                             <div key={v4()}>
                                                 <span key={v4()}> {request.firstName} {request.lastName}</span>
-                                                <button key={v4()} onClick={() => handleRequest(request.uid, "delete")}>Elimina</button>
+                                                <button className="rejectButton" key={v4()} onClick={() => handleRequest(request.uid, "delete")}>Elimina</button>
                                             </div>
                                         ))}
                                         </>
