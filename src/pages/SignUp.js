@@ -3,6 +3,7 @@ import {createUserWithEmailAndPassword, updateProfile} from "firebase/auth"
 import {auth} from "../firebase";
 import {Link, useNavigate} from "react-router-dom";
 import axios from "axios"
+import ReactLoading from "react-loading";
 
 export default function SignIn() {
     const [firstName, setFirstName] = useState('');
@@ -67,17 +68,22 @@ export default function SignIn() {
     return (
         <div className="formContainer">
             <div className='formWrapper'>
-            <span className='title'>Registrati</span>
-            <form onSubmit={handleSignUp}>
-                <input type="firstName" placeholder="Nome" value={firstName} onChange={e => setFirstName(e.target.value)}/>
-                <input type="lastName" placeholder="Cognome" value={lastName} onChange={e => setLastName(e.target.value)}/>
-                <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)}/>
-                <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)}/>
-                <button type="submit">Registrati</button>
-                {loading && <span>Attendere prego...</span>}
-                <p>Hai già un account? <Link to="/login">Accedi</Link></p>
-                {error && <span>Qualcosa è andato storto</span>}
-            </form>
+            {loading ? (
+                <ReactLoading type="spin" height={100} width={50} color="#6495EDFF"></ReactLoading>
+            ): (
+                <>
+                    <span className='title'>Registrati</span>
+                    <form onSubmit={handleSignUp}>
+                        <input type="firstName" placeholder="Nome" value={firstName} onChange={e => setFirstName(e.target.value)}/>
+                        <input type="lastName" placeholder="Cognome" value={lastName} onChange={e => setLastName(e.target.value)}/>
+                        <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)}/>
+                        <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)}/>
+                        <button type="submit">Registrati</button>
+                        <p>Hai già un account? <Link to="/login">Accedi</Link></p>
+                        {error && <span>Qualcosa è andato storto</span>}
+                    </form>
+                </>
+            )}
             </div>
         </div>
     )
