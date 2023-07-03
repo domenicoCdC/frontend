@@ -287,3 +287,16 @@
   border-radius: 5px;
   font-size: 16px;
 }
+
+.later {
+  font-family: serif;
+  margin-bottom: 100px;
+  margin-top: 100px;
+  line-height: 35px;
+  font-size: 40px;
+  color: #ffffff;
+  display: block;
+  background-color: gold;
+  border-radius: 100px;
+  padding: 20px;
+}

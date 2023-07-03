@@ -137,6 +137,7 @@ const Profile = () => {
         if (type === "reject") {
             try {
                 const response = await axios.put(`http://localhost:3001/api/friend-requests/from${fromUid}to${currentUser.uid}/reject`);
+                setUsersInfoReceiver(usersInfoReceiver.filter((e) => e.uid !== fromUid ))
                 console.log(response.data);
                 setLoading(false)
             } catch (err) {
@@ -148,6 +149,7 @@ const Profile = () => {
             try {
                 const response = await axios.put(`http://localhost:3001/api/friend-requests/from${fromUid}to${currentUser.uid}/accept`);
                 setAccepted(true);
+                setUsersInfoReceiver(usersInfoReceiver.filter((e) => e.uid !== fromUid ))
                 console.log(response.data);
                 setLoading(false);
 
@@ -159,12 +161,16 @@ const Profile = () => {
         else if (type === "delete") {
             try {
                 const response = await axios.delete(`http://localhost:3001/api/friend-requests/from${fromUid}to${currentUser.uid}/delete`)
+                const response2 = await axios.delete(`http://localhost:3001/api/friend-requests/from${currentUser.uid}to${fromUid}/delete`)
+
+                setFriendsInfo(friendsInfo.filter((e) => e.uid !== fromUid ))
                 setDeleted(true);
-                console.log(response.data)
+                console.log(response.data + "\n" + response2.data)
                 setLoading(false);
             } catch (err) {
                 console.log(err);
                 setLoading(false);
+                setDeleted(false);
             }
         }
 
@@ -182,23 +188,42 @@ const Profile = () => {
                             <button onClick={fetchReceiverUsersAsObjects && fetchFriendsAsObjects}>Aggiorna</button>
 
                             <div>
-                                {usersInfoReceiver.map((request) => (
-                                    <div key={v4()}>
-                                        Richieste ricevute
-                                        <span key={v4()}> {request.firstName} {request.lastName}</span>
-                                        <button key={v4()} onClick={() => handleRequest(request.uid, "accept")}>Accetta</button>
-                                        <button key={v4()} onClick={() => handleRequest(request.uid, "reject")}>Rifiuta</button>
-                                    </div>
-                                ))}
+                                {usersInfoReceiver.length === 0 ? (
+                                    <>
+                                        <h3 className="later">Torna Piu Tardi...</h3>
+                                    </>
+                                ) : (
+                                    <>
+                                    {usersInfoReceiver.map((request) => (
+                                            <div key={v4()}>
+                                                Richieste ricevute
+                                                <span key={v4()}> {request.firstName} {request.lastName}</span>
+                                                <button key={v4()} onClick={() => handleRequest(request.uid, "accept")}>Accetta</button>
+                                                <button key={v4()} onClick={() => handleRequest(request.uid, "reject")}>Rifiuta</button>
+                                            </div>
+                                        ))}
+                                    </>
+                                )}
                             </div>
                             <div>
-                                Lista amici
-                                {friendsInfo.map((request) => (
-                                    <div key={v4()}>
-                                        <span key={v4()}> {request.firstName} {request.lastName}</span>
-                                        <button key={v4()} onClick={() => handleRequest(request.uid, "delete")}>Elimina</button>
-                                    </div>
-                                ))}
+                                {friendsInfo.length === 0 ? (
+                                    <>
+                                        <h2>è tutto...ci vediamo dopo!</h2>
+                                    </>
+                                ) :
+                                    (
+                                        <>
+                                        Lista amici
+                                        {friendsInfo.map((request) => (
+                                            <div key={v4()}>
+                                                <span key={v4()}> {request.firstName} {request.lastName}</span>
+                                                <button key={v4()} onClick={() => handleRequest(request.uid, "delete")}>Elimina</button>
+                                            </div>
+                                        ))}
+                                        </>
+                                    )
+                                }
+
 
                             </div>
 
